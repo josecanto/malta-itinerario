@@ -35,7 +35,6 @@
   .tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:20px;color:#fff;margin-top:4px}
   .t-culture{background:var(--sea-d)} .t-beach{background:#e0a92e} .t-food{background:var(--coral)}
   .t-night{background:var(--gay)} .t-move{background:#5b7891} .t-free{background:#3aa17e}
-  /* modal */
   .overlay{position:fixed;inset:0;background:rgba(8,22,36,.6);display:none;align-items:center;
     justify-content:center;padding:18px;z-index:50;backdrop-filter:blur(3px)}
   .overlay.on{display:flex}
@@ -45,9 +44,10 @@
   .modal .top{background:var(--bg);color:#fff;padding:16px 18px}
   .modal .top .when{font-size:12px;opacity:.8;margin-bottom:3px}
   .modal .top h3{margin:0;font-size:19px}
-  .modal .body{padding:16px 18px;font-size:14px;line-height:1.5;color:#31485c}
+  .modal .body{padding:16px 18px;font-size:14px;line-height:1.5;color:#31485c;min-height:60px}
   .modal .body p{margin:0 0 10px}
   .modal .body .tip{background:#eef8fb;border-left:3px solid var(--sea);padding:8px 10px;border-radius:6px;font-size:13px}
+  .modal .body .loading{color:#9fb2c2;font-style:italic}
   .modal .close{position:absolute;top:12px;right:14px;color:#fff;font-size:24px;cursor:pointer;
     line-height:1;background:none;border:none}
   .modal-head{position:relative}
@@ -70,9 +70,7 @@
   <p style="margin-top:8px;font-size:12px;opacity:.8">Toca cualquier casilla para ver los detalles 👇</p>
 </header>
 
-<div class="wrap">
-<table id="grid"></table>
-</div>
+<div class="wrap"><table id="grid"></table></div>
 
 <footer>Horarios orientativos · Reserva ferri de Comino y pase gratuito de Blue Lagoon (blcomino.com) con antelación</footer>
 
@@ -92,65 +90,51 @@ const days = [
   {k:"sab", label:"Sáb 22", sub:"Valeta + noche"},
   {k:"dom", label:"Dom 23", sub:"Descanso + Mdina"},
   {k:"lun", label:"Lun 24", sub:"Sur + norte"},
-  {k:"mar", label:"Mar 25", sub:"Comino + Gozo"},
+  {k:"mar", label:"Mar 25", sub:"Comino"},
   {k:"mie", label:"Mié 26", sub:"Salida"}
 ];
 const rows = ["08:00–09:00","09:00–10:30","10:30–12:00","12:00–13:30","13:30–15:00","15:00–16:30","16:30–18:30","18:30–20:30","20:30–23:00","23:00+"];
 
-// data[row][dayKey] = {t:title, tag:'culture|beach|food|night|move|free', d:'detalles HTML'}
 const D = {};
-function set(r,day,short,tag,det){ (D[r]=D[r]||{})[day]={t:short,tag:tag,d:det}; }
+function set(r,day,short,tag){ (D[r]=D[r]||{})[day]={t:short,tag:tag}; }
+set(6,"vie","Llegada + check-in","move");
+set(7,"vie","Paseo + copa","beach");
+set(8,"vie","Cena Spinola Bay","food");
+set(1,"sab","La Valeta","culture");
+set(2,"sab","Concatedral S. Juan","culture");
+set(3,"sab","Barrakka + cañón","culture");
+set(4,"sab","Comida La Pira","food");
+set(5,"sab","Tres Ciudades","culture");
+set(6,"sab","Vuelta al hotel","move");
+set(7,"sab","Previa cócteles","night");
+set(9,"sab","🌈 Michelangelo","night");
+set(1,"dom","Descanso","free");
+set(2,"dom","Piscina / playa","free");
+set(3,"dom","Recoger coche (12:00)","move");
+set(4,"dom","Comida","food");
+set(5,"dom","Rotunda de Mosta","culture");
+set(6,"dom","Mdina + Rabat","culture");
+set(7,"dom","Atardecer Fontanella","food");
+set(8,"dom","Cena Ta' Marija","food");
+set(1,"lun","Salida al sur","move");
+set(2,"lun","Marsaxlokk","culture");
+set(3,"lun","St Peter's Pool","beach");
+set(4,"lun","Comida Tartarun","food");
+set(5,"lun","Blue Grotto","beach");
+set(6,"lun","Ruta norte + check-in","move");
+set(8,"lun","Cena en el hotel","food");
+set(1,"mar","Ċirkewwa / Marfa","move");
+set(2,"mar","Ferri Blue Lagoon","beach");
+set(3,"mar","Comino: baño y cuevas","beach");
+set(4,"mar","Comino + regreso","beach");
+set(5,"mar","Comida cerca de Marfa","food");
+set(6,"mar","Playa: Mellieħa / Popeye","beach");
+set(7,"mar","Relax / vuelta al hotel","free");
+set(8,"mar","Cena en el hotel","food");
+set(2,"mie","Baño despedida","beach");
+set(3,"mie","Sliema (opcional)","free");
+set(4,"mie","Devolución coche","move");
 
-/* ---- VIERNES 21 ---- */
-set(6,"vie","Llegada + check-in","move","<p>Aterrizáis a las <b>17:00</b>. Traslado al be.HOTEL en taxi (el coche lo recogéis el domingo).</p><p>Check-in y a disfrutar de St Julian's a pie. Estos primeros días no necesitáis coche.</p>");
-set(7,"vie","Paseo + copa","beach","<p>Paseo al atardecer por <b>Spinola Bay → Balluta Bay → Sliema</b>, la postal de la zona.</p><p>Copa en un rooftop: <b>Quarterdeck</b> (Hilton, Portomaso) o <b>The Thirsty Barber</b>.</p>");
-set(8,"vie","Cena Spinola Bay","food","<p>Cena de bienvenida frente al mar en <b>Spinola Bay</b>. Primera noche tranquila para aclimataros.</p>");
-
-/* ---- SÁBADO 22 ---- */
-set(1,"sab","La Valeta","culture","<p>Salida <b>08:30</b> a La Valeta. Aparca en el <b>Park & Ride de Floriana</b> y entra andando/lanzadera (el casco es peatonal).</p>");
-set(2,"sab","Concatedral S. Juan","culture","<p><b>Concatedral de San Juan</b> nada más abrir: los Caravaggio y el suelo de mármol son espectaculares.</p><div class='tip'>Clave verla hoy: <b>los domingos cierra</b>.</div>");
-set(3,"sab","Barrakka + cañón","culture","<p><b>Upper Barrakka Gardens</b> con vistas al Gran Puerto y la <b>salva de cañón</b> del Saluting Battery a las <b>12:00</b>.</p>");
-set(4,"sab","Comida La Pira","food","<p>Comida maltesa en <b>La Pira Maltese Kitchen</b>. Pedid <i>pasta con conejo</i> y <i>timpana</i>.</p>");
-set(5,"sab","Tres Ciudades","culture","<p>Cruza en el <b>ferry del Gran Puerto</b> a las <b>Tres Ciudades</b> (Birgu/Vittoriosa): Fort St Angelo y la marina. El lado más auténtico y con vistas brutales.</p>");
-set(6,"sab","Vuelta al hotel","move","<p>Regreso a St Julian's para descansar y arreglaros de cara a la gran noche.</p>");
-set(7,"sab","Previa cócteles","night","<p>Previa: <b>The Thirsty Barber</b> o <b>Le Chandelier</b> (bar-lounge gay abierto mié–dom en verano).</p>");
-set(9,"sab","🌈 Michelangelo","night","<p><b>Noche destacada en Paceville</b> (a pie desde el hotel). Club: <b>Michelangelo</b>, el único club gay dedicado de Malta, dos plantas y noches temáticas.</p><div class='tip'>Mira @lollipopnight en Instagram por si cae fiesta <b>Lollipop</b> ese finde: sería LA opción.</div>");
-
-/* ---- DOMINGO 23 ---- */
-set(1,"dom","Descanso","free","<p>Mañana libre. Sin despertador.</p>");
-set(2,"dom","Piscina / playa","free","<p>Piscina del hotel o baño relajado cerca de Sliema/St Julian's.</p>");
-set(3,"dom","Recoger coche (12:00)","move","<p>A las <b>12:00</b> recogéis el <b>coche de alquiler</b>. Recordad: en Malta se conduce <b>por la izquierda</b>.</p><p>El be.HOTEL no tiene parking propio pero conecta con el <b>Bay Street Car Park</b>. Alternativas más baratas: Welbee's (~15 €/día) o Pender Gardens.</p>");
-set(4,"dom","Comida","food","<p>Comida sin prisas por Spinola/Sliema o de camino, antes de salir hacia Mosta y Mdina.</p>");
-set(5,"dom","Rotunda de Mosta","culture","<p>De camino a Mdina, parada en la <b>Rotunda de Mosta</b>, una de las cúpulas más grandes de Europa.</p>");
-set(6,"dom","Mdina + Rabat","culture","<p><b>Mdina</b>, la 'Ciudad del Silencio': murallas, callejeo y vistas. Al lado, en <b>Rabat</b>, las <b>Catacumbas de San Pablo</b>.</p>");
-set(7,"dom","Atardecer Fontanella","food","<p>Atardecer en <b>Fontanella Tea Garden</b> (Mdina): terraza panorámica famosa por sus tartas y la <i>ftira</i>.</p>");
-set(8,"dom","Cena Ta' Marija","food","<p>Cena típica con música folk en <b>Ta' Marija</b> (conejo, <i>fenkata</i>). O vuelta relajada a St Julian's.</p>");
-
-/* ---- LUNES 24 ---- */
-set(1,"lun","Salida al sur","move","<p>Salida <b>temprano</b> con el equipaje en el coche (el check-in del nuevo hotel es por la tarde). Día que cruza la isla: sur → norte.</p>");
-set(2,"lun","Marsaxlokk","culture","<p><b>Marsaxlokk</b>, pueblo pesquero con las barcas <i>luzzu</i> de colores y puestos junto al puerto.</p>");
-set(3,"lun","St Peter's Pool","beach","<p>Baño en <b>St Peter's Pool</b>, piscina natural de roca turquesa.</p><div class='tip'>Llevad calzado de agua; hay saltos de roca opcionales.</div>");
-set(4,"lun","Comida Tartarun","food","<p>Comida de pescado fresco en <b>Tartarun</b> (o La Nostra Padrona), en el puerto de Marsaxlokk.</p>");
-set(5,"lun","Blue Grotto","beach","<p><b>Blue Grotto</b>: mirador de Wied iż-Żurrieq y, si el mar acompaña, paseo en barca por las cuevas. Al lado, templo megalítico de <b>Ħaġar Qim</b>.</p>");
-set(6,"lun","Ruta norte + check-in","move","<p>Conducís al norte (~1 h) y <b>check-in en el Rambla Bay Resort</b> (Xemxija). Piscina y relax.</p>");
-set(8,"lun","Cena en el hotel","food","<p>Cena en el <b>Rambla Bay Resort</b> tras el traslado. Día largo (sur → norte), así que se agradece cenar sin moverse.</p>");
-
-/* ---- MARTES 25 ---- */
-set(1,"mar","Ċirkewwa / Marfa","move","<p>Llegada temprano al puerto de <b>Ċirkewwa / Marfa</b>, a un paso del hotel.</p><div class='tip'>Compra el ferri con antelación y saca el <b>pase gratuito de Blue Lagoon</b> en blcomino.com (obligatorio para desembarcar).</div>");
-set(2,"mar","Ferri Blue Lagoon","beach","<p><b>Ferri de las 09:30</b> al <b>Blue Lagoon</b> (Comino Ferries Co-Op, 15 € i/v; ~20 min). Coger el primero para evitar la masificación.</p>");
-set(3,"mar","Comino: baño y cuevas","beach","<p>Baño en el agua turquesa, esnórquel y, si el barco lo incluye, <b>cuevas de Comino</b> y <b>Crystal Lagoon</b>.</p><div class='tip'>Llevad agua y comida: en la isla hay poco y caro.</div>");
-set(4,"mar","Comino + regreso","beach","<p>Más tiempo de relax y baño en Comino, y ferri de vuelta a <b>Marfa / Ċirkewwa</b> a mediodía.</p>");
-set(5,"mar","Comida cerca de Marfa","food","<p>Comida junto al puerto con vistas a Comino en <b>Porto Lounge</b> (Triq il-Marfa).</p><div class='tip'>Alternativas: <b>K Lounge</b> (Paradise Bay, nº1 de Ċirkewwa) o <b>Byblos</b> (libanés, Marfa Bay).</div>");
-set(6,"mar","Playa: Mellieħa / Popeye","beach","<p>Tarde de playa en <b>Mellieħa Bay (Għadira)</b>, de arena y aguas poco profundas, o foto de <b>Popeye Village</b> desde el mirador de Anchor Bay.</p>");
-set(7,"mar","Relax / vuelta al hotel","free","<p>Vuelta al <b>Rambla Bay Resort</b>: piscina y descanso.</p>");
-set(8,"mar","Cena en el hotel","food","<p>Cena en el <b>Rambla Bay Resort</b> tras el día de Comino y Gozo.</p>");
-
-/* ---- MIÉRCOLES 26 ---- */
-set(2,"mie","Baño despedida","beach","<p>Último baño en <b>Golden Bay</b> o <b>Mellieħa</b> (según hora del vuelo).</p>");
-set(3,"mie","Sliema (opcional)","free","<p>Última vuelta y compras por <b>Sliema</b> (Tigné Point) si hay tiempo.</p>");
-set(4,"mie","Devolución coche","move","<p>Devolución del coche con margen. Repostad antes: suelen exigir depósito lleno. Luego, aeropuerto.</p>");
-
-/* ---- build table ---- */
 const grid = document.getElementById("grid");
 let thead = "<tr><th>Hora</th>" + days.map(d=>`<th>${d.label}<small>${d.sub}</small></th>`).join("") + "</tr>";
 let body = "";
@@ -158,11 +142,8 @@ rows.forEach((r,ri)=>{
   let tds = `<td class="time">${r}</td>`;
   days.forEach(d=>{
     const c = D[ri] && D[ri][d.k];
-    if(c){
-      tds += `<td class="cell" data-r="${ri}" data-d="${d.k}"><b>${c.t}</b><span class="tag t-${c.tag}">${tagName(c.tag)}</span></td>`;
-    } else {
-      tds += `<td class="cell empty">·</td>`;
-    }
+    if(c){ tds += `<td class="cell" data-r="${ri}" data-d="${d.k}"><b>${c.t}</b><span class="tag t-${c.tag}">${tagName(c.tag)}</span></td>`; }
+    else { tds += `<td class="cell empty">·</td>`; }
   });
   body += `<tr>${tds}</tr>`;
 });
@@ -170,16 +151,28 @@ grid.innerHTML = thead + body;
 
 function tagName(t){return {culture:"Cultura",beach:"Playa/mar",food:"Comida",night:"Noche",move:"Traslado",free:"Libre"}[t]||t;}
 
+const cache = {};
+async function openCell(r, dk){
+  const c = D[r][dk]; const day = days.find(x=>x.k===dk);
+  document.getElementById("m-when").textContent = `${day.label} · ${rows[r]}`;
+  document.getElementById("m-title").textContent = c.t.replace("🌈 ","");
+  const bodyEl = document.getElementById("m-body");
+  document.getElementById("overlay").classList.add("on");
+  const key = `${dk}-${r}`;
+  if(cache[key]){ bodyEl.innerHTML = cache[key]; return; }
+  bodyEl.innerHTML = '<p class="loading">Cargando…</p>';
+  try{
+    const res = await fetch(`content/${dk}-${r}.html`, {cache:"no-cache"});
+    if(!res.ok) throw new Error(res.status);
+    const html = await res.text();
+    cache[key] = html; bodyEl.innerHTML = html;
+  }catch(e){
+    bodyEl.innerHTML = '<p>No se pudo cargar la información. Abre esta página desde su URL publicada (GitHub Pages), no como archivo local.</p>';
+  }
+}
+
 document.querySelectorAll("td.cell:not(.empty)").forEach(td=>{
-  td.addEventListener("click",()=>{
-    const r=td.dataset.r, dk=td.dataset.d;
-    const c=D[r][dk];
-    const day=days.find(x=>x.k===dk);
-    document.getElementById("m-when").textContent = `${day.label} · ${rows[r]}`;
-    document.getElementById("m-title").textContent = c.t.replace("🌈 ","");
-    document.getElementById("m-body").innerHTML = c.d;
-    document.getElementById("overlay").classList.add("on");
-  });
+  td.addEventListener("click",()=> openCell(td.dataset.r, td.dataset.d));
 });
 function close_(){document.getElementById("overlay").classList.remove("on");}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")close_();});
