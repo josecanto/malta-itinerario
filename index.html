@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malta · Itinerario 21–26 agosto 2026</title>
+<style>
+  :root{
+    --bg:#0f2b46; --bg2:#163a5c; --card:#ffffff; --ink:#12283d; --muted:#5b7891;
+    --sea:#1ea7c5; --sea-d:#0d7fa0; --sand:#f4e4c1; --coral:#ff6b6b; --line:#dbe6ef;
+    --gay:#8b5cf6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,#0f2b46,#1b5170 60%,#1ea7c5);color:var(--ink);min-height:100vh;padding:18px}
+  header{max-width:1100px;margin:0 auto 16px;color:#fff;text-align:center}
+  header h1{margin:0 0 4px;font-size:26px;letter-spacing:.3px}
+  header p{margin:0;opacity:.85;font-size:14px}
+  .legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:12px auto 0;max-width:900px}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#eaf4fb}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .wrap{max-width:1100px;margin:0 auto;background:rgba(255,255,255,.97);border-radius:16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);padding:10px;overflow-x:auto}
+  table{border-collapse:separate;border-spacing:5px;width:100%;min-width:820px}
+  th{background:var(--bg);color:#fff;padding:10px 8px;border-radius:9px;font-size:13px;position:sticky;top:0}
+  th small{display:block;font-weight:400;opacity:.75;font-size:11px}
+  td.time{background:var(--sand);color:#7a5b1e;font-weight:700;font-size:12px;text-align:center;
+    border-radius:9px;white-space:nowrap;padding:6px}
+  td.cell{border-radius:9px;padding:9px;font-size:12.5px;line-height:1.35;cursor:pointer;
+    border:1px solid var(--line);background:#f7fbfe;transition:transform .08s,box-shadow .12s;vertical-align:top}
+  td.cell:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(13,127,160,.25);border-color:var(--sea)}
+  td.cell b{display:block;color:var(--ink);margin-bottom:2px}
+  td.cell.empty{background:#eef3f7;color:#9fb2c2;cursor:default;text-align:center}
+  td.cell.empty:hover{transform:none;box-shadow:none;border-color:var(--line)}
+  .tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:20px;color:#fff;margin-top:4px}
+  .t-culture{background:var(--sea-d)} .t-beach{background:#e0a92e} .t-food{background:var(--coral)}
+  .t-night{background:var(--gay)} .t-move{background:#5b7891} .t-free{background:#3aa17e}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(8,22,36,.6);display:none;align-items:center;
+    justify-content:center;padding:18px;z-index:50;backdrop-filter:blur(3px)}
+  .overlay.on{display:flex}
+  .modal{background:#fff;max-width:460px;width:100%;border-radius:16px;overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.4);animation:pop .18s ease}
+  @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .top{background:var(--bg);color:#fff;padding:16px 18px}
+  .modal .top .when{font-size:12px;opacity:.8;margin-bottom:3px}
+  .modal .top h3{margin:0;font-size:19px}
+  .modal .body{padding:16px 18px;font-size:14px;line-height:1.5;color:#31485c}
+  .modal .body p{margin:0 0 10px}
+  .modal .body .tip{background:#eef8fb;border-left:3px solid var(--sea);padding:8px 10px;border-radius:6px;font-size:13px}
+  .modal .close{position:absolute;top:12px;right:14px;color:#fff;font-size:24px;cursor:pointer;
+    line-height:1;background:none;border:none}
+  .modal-head{position:relative}
+  footer{max-width:1100px;margin:14px auto 0;color:#dceaf4;font-size:12px;text-align:center;opacity:.85}
+  @media(max-width:600px){header h1{font-size:21px}.wrap{padding:6px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🇲🇹 Malta · Itinerario</h1>
+  <p>21 – 26 de agosto de 2026 · be.HOTEL (St Julian's) → Rambla Bay Resort (norte)</p>
+  <div class="legend">
+    <span><i class="dot" style="background:#0d7fa0"></i>Cultura</span>
+    <span><i class="dot" style="background:#e0a92e"></i>Playa/mar</span>
+    <span><i class="dot" style="background:#ff6b6b"></i>Gastronomía</span>
+    <span><i class="dot" style="background:#8b5cf6"></i>Noche</span>
+    <span><i class="dot" style="background:#5b7891"></i>Traslado</span>
+    <span><i class="dot" style="background:#3aa17e"></i>Libre</span>
+  </div>
+  <p style="margin-top:8px;font-size:12px;opacity:.8">Toca cualquier casilla para ver los detalles 👇</p>
+</header>
+
+<div class="wrap">
+<table id="grid"></table>
+</div>
+
+<footer>Horarios orientativos · Reserva ferri de Comino y pase gratuito de Blue Lagoon (blcomino.com) con antelación</footer>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)close_()">
+  <div class="modal">
+    <div class="modal-head">
+      <button class="close" onclick="close_()">&times;</button>
+      <div class="top"><div class="when" id="m-when"></div><h3 id="m-title"></h3></div>
+    </div>
+    <div class="body" id="m-body"></div>
+  </div>
+</div>
+
+<script>
+const days = [
+  {k:"vie", label:"Vie 21", sub:"Llegada"},
+  {k:"sab", label:"Sáb 22", sub:"Valeta + noche"},
+  {k:"dom", label:"Dom 23", sub:"Descanso + Mdina"},
+  {k:"lun", label:"Lun 24", sub:"Sur + norte"},
+  {k:"mar", label:"Mar 25", sub:"Comino + Gozo"},
+  {k:"mie", label:"Mié 26", sub:"Salida"}
+];
+const rows = ["08:00–09:00","09:00–10:30","10:30–12:00","12:00–13:30","13:30–15:00","15:00–16:30","16:30–18:30","18:30–20:30","20:30–23:00","23:00+"];
+
+// data[row][dayKey] = {t:title, tag:'culture|beach|food|night|move|free', d:'detalles HTML'}
+const D = {};
+function set(r,day,short,tag,det){ (D[r]=D[r]||{})[day]={t:short,tag:tag,d:det}; }
+
+/* ---- VIERNES 21 ---- */
+set(6,"vie","Llegada + check-in","move","<p>Aterrizáis a las <b>17:00</b>. Traslado al be.HOTEL en taxi (el coche lo recogéis el domingo).</p><p>Check-in y a disfrutar de St Julian's a pie. Estos primeros días no necesitáis coche.</p>");
+set(7,"vie","Paseo + copa","beach","<p>Paseo al atardecer por <b>Spinola Bay → Balluta Bay → Sliema</b>, la postal de la zona.</p><p>Copa en un rooftop: <b>Quarterdeck</b> (Hilton, Portomaso) o <b>The Thirsty Barber</b>.</p>");
+set(8,"vie","Cena Spinola Bay","food","<p>Cena de bienvenida frente al mar en <b>Spinola Bay</b>. Primera noche tranquila para aclimataros.</p>");
+
+/* ---- SÁBADO 22 ---- */
+set(1,"sab","La Valeta","culture","<p>Salida <b>08:30</b> a La Valeta. Aparca en el <b>Park & Ride de Floriana</b> y entra andando/lanzadera (el casco es peatonal).</p>");
+set(2,"sab","Concatedral S. Juan","culture","<p><b>Concatedral de San Juan</b> nada más abrir: los Caravaggio y el suelo de mármol son espectaculares.</p><div class='tip'>Clave verla hoy: <b>los domingos cierra</b>.</div>");
+set(3,"sab","Barrakka + cañón","culture","<p><b>Upper Barrakka Gardens</b> con vistas al Gran Puerto y la <b>salva de cañón</b> del Saluting Battery a las <b>12:00</b>.</p>");
+set(4,"sab","Comida La Pira","food","<p>Comida maltesa en <b>La Pira Maltese Kitchen</b>. Pedid <i>pasta con conejo</i> y <i>timpana</i>.</p>");
+set(5,"sab","Tres Ciudades","culture","<p>Cruza en el <b>ferry del Gran Puerto</b> a las <b>Tres Ciudades</b> (Birgu/Vittoriosa): Fort St Angelo y la marina. El lado más auténtico y con vistas brutales.</p>");
+set(6,"sab","Vuelta al hotel","move","<p>Regreso a St Julian's para descansar y arreglaros de cara a la gran noche.</p>");
+set(7,"sab","Previa cócteles","night","<p>Previa: <b>The Thirsty Barber</b> o <b>Le Chandelier</b> (bar-lounge gay abierto mié–dom en verano).</p>");
+set(9,"sab","🌈 Michelangelo","night","<p><b>Noche destacada en Paceville</b> (a pie desde el hotel). Club: <b>Michelangelo</b>, el único club gay dedicado de Malta, dos plantas y noches temáticas.</p><div class='tip'>Mira @lollipopnight en Instagram por si cae fiesta <b>Lollipop</b> ese finde: sería LA opción.</div>");
+
+/* ---- DOMINGO 23 ---- */
+set(1,"dom","Descanso","free","<p>Mañana libre. Sin despertador.</p>");
+set(2,"dom","Piscina / playa","free","<p>Piscina del hotel o baño relajado cerca de Sliema/St Julian's.</p>");
+set(3,"dom","Recoger coche (12:00)","move","<p>A las <b>12:00</b> recogéis el <b>coche de alquiler</b>. Recordad: en Malta se conduce <b>por la izquierda</b>.</p><p>El be.HOTEL no tiene parking propio pero conecta con el <b>Bay Street Car Park</b>. Alternativas más baratas: Welbee's (~15 €/día) o Pender Gardens.</p>");
+set(4,"dom","Comida","food","<p>Comida sin prisas por Spinola/Sliema o de camino, antes de salir hacia Mosta y Mdina.</p>");
+set(5,"dom","Rotunda de Mosta","culture","<p>De camino a Mdina, parada en la <b>Rotunda de Mosta</b>, una de las cúpulas más grandes de Europa.</p>");
+set(6,"dom","Mdina + Rabat","culture","<p><b>Mdina</b>, la 'Ciudad del Silencio': murallas, callejeo y vistas. Al lado, en <b>Rabat</b>, las <b>Catacumbas de San Pablo</b>.</p>");
+set(7,"dom","Atardecer Fontanella","food","<p>Atardecer en <b>Fontanella Tea Garden</b> (Mdina): terraza panorámica famosa por sus tartas y la <i>ftira</i>.</p>");
+set(8,"dom","Cena Ta' Marija","food","<p>Cena típica con música folk en <b>Ta' Marija</b> (conejo, <i>fenkata</i>). O vuelta relajada a St Julian's.</p>");
+
+/* ---- LUNES 24 ---- */
+set(1,"lun","Salida al sur","move","<p>Salida <b>temprano</b> con el equipaje en el coche (el check-in del nuevo hotel es por la tarde). Día que cruza la isla: sur → norte.</p>");
+set(2,"lun","Marsaxlokk","culture","<p><b>Marsaxlokk</b>, pueblo pesquero con las barcas <i>luzzu</i> de colores y puestos junto al puerto.</p>");
+set(3,"lun","St Peter's Pool","beach","<p>Baño en <b>St Peter's Pool</b>, piscina natural de roca turquesa.</p><div class='tip'>Llevad calzado de agua; hay saltos de roca opcionales.</div>");
+set(4,"lun","Comida Tartarun","food","<p>Comida de pescado fresco en <b>Tartarun</b> (o La Nostra Padrona), en el puerto de Marsaxlokk.</p>");
+set(5,"lun","Blue Grotto","beach","<p><b>Blue Grotto</b>: mirador de Wied iż-Żurrieq y, si el mar acompaña, paseo en barca por las cuevas. Al lado, templo megalítico de <b>Ħaġar Qim</b>.</p>");
+set(6,"lun","Ruta norte + check-in","move","<p>Conducís al norte (~1 h) y <b>check-in en el Rambla Bay Resort</b> (Xemxija). Piscina y relax.</p>");
+set(8,"lun","Cena en el hotel","food","<p>Cena en el <b>Rambla Bay Resort</b> tras el traslado. Día largo (sur → norte), así que se agradece cenar sin moverse.</p>");
+
+/* ---- MARTES 25 ---- */
+set(1,"mar","Ċirkewwa / Marfa","move","<p>Llegada temprano al puerto de <b>Ċirkewwa / Marfa</b>, a un paso del hotel.</p><div class='tip'>Compra el ferri con antelación y saca el <b>pase gratuito de Blue Lagoon</b> en blcomino.com (obligatorio para desembarcar).</div>");
+set(2,"mar","Ferri Blue Lagoon","beach","<p><b>Ferri de las 09:30</b> al <b>Blue Lagoon</b> (Comino Ferries Co-Op, 15 € i/v; ~20 min). Coger el primero para evitar la masificación.</p>");
+set(3,"mar","Comino: baño y cuevas","beach","<p>Baño en el agua turquesa, esnórquel y, si el barco lo incluye, <b>cuevas de Comino</b> y <b>Crystal Lagoon</b>.</p><div class='tip'>Llevad agua y comida: en la isla hay poco y caro.</div>");
+set(4,"mar","Comino + regreso","beach","<p>Más tiempo de relax y baño en Comino, y ferri de vuelta a <b>Marfa / Ċirkewwa</b> a mediodía.</p>");
+set(5,"mar","Comida cerca de Marfa","food","<p>Comida junto al puerto con vistas a Comino en <b>Porto Lounge</b> (Triq il-Marfa).</p><div class='tip'>Alternativas: <b>K Lounge</b> (Paradise Bay, nº1 de Ċirkewwa) o <b>Byblos</b> (libanés, Marfa Bay).</div>");
+set(6,"mar","Playa: Mellieħa / Popeye","beach","<p>Tarde de playa en <b>Mellieħa Bay (Għadira)</b>, de arena y aguas poco profundas, o foto de <b>Popeye Village</b> desde el mirador de Anchor Bay.</p>");
+set(7,"mar","Relax / vuelta al hotel","free","<p>Vuelta al <b>Rambla Bay Resort</b>: piscina y descanso.</p>");
+set(8,"mar","Cena en el hotel","food","<p>Cena en el <b>Rambla Bay Resort</b> tras el día de Comino y Gozo.</p>");
+
+/* ---- MIÉRCOLES 26 ---- */
+set(2,"mie","Baño despedida","beach","<p>Último baño en <b>Golden Bay</b> o <b>Mellieħa</b> (según hora del vuelo).</p>");
+set(3,"mie","Sliema (opcional)","free","<p>Última vuelta y compras por <b>Sliema</b> (Tigné Point) si hay tiempo.</p>");
+set(4,"mie","Devolución coche","move","<p>Devolución del coche con margen. Repostad antes: suelen exigir depósito lleno. Luego, aeropuerto.</p>");
+
+/* ---- build table ---- */
+const grid = document.getElementById("grid");
+let thead = "<tr><th>Hora</th>" + days.map(d=>`<th>${d.label}<small>${d.sub}</small></th>`).join("") + "</tr>";
+let body = "";
+rows.forEach((r,ri)=>{
+  let tds = `<td class="time">${r}</td>`;
+  days.forEach(d=>{
+    const c = D[ri] && D[ri][d.k];
+    if(c){
+      tds += `<td class="cell" data-r="${ri}" data-d="${d.k}"><b>${c.t}</b><span class="tag t-${c.tag}">${tagName(c.tag)}</span></td>`;
+    } else {
+      tds += `<td class="cell empty">·</td>`;
+    }
+  });
+  body += `<tr>${tds}</tr>`;
+});
+grid.innerHTML = thead + body;
+
+function tagName(t){return {culture:"Cultura",beach:"Playa/mar",food:"Comida",night:"Noche",move:"Traslado",free:"Libre"}[t]||t;}
+
+document.querySelectorAll("td.cell:not(.empty)").forEach(td=>{
+  td.addEventListener("click",()=>{
+    const r=td.dataset.r, dk=td.dataset.d;
+    const c=D[r][dk];
+    const day=days.find(x=>x.k===dk);
+    document.getElementById("m-when").textContent = `${day.label} · ${rows[r]}`;
+    document.getElementById("m-title").textContent = c.t.replace("🌈 ","");
+    document.getElementById("m-body").innerHTML = c.d;
+    document.getElementById("overlay").classList.add("on");
+  });
+});
+function close_(){document.getElementById("overlay").classList.remove("on");}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")close_();});
+</script>
+</body>
+</html>
