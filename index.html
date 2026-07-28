@@ -60,6 +60,16 @@
   .modal-head{position:relative}
   footer{max-width:1100px;margin:14px auto 0;color:#dceaf4;font-size:12px;text-align:center;opacity:.85}
   @media(max-width:600px){header h1{font-size:21px}.wrap{padding:6px}}
+  .col-hidden{display:none!important}
+  .day-toggles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 auto 12px;max-width:1100px}
+  .day-btn{padding:7px 16px;border-radius:20px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);
+    color:rgba(255,255,255,.65);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;
+    font-family:inherit;line-height:1.2}
+  .day-btn small{display:block;font-size:10px;font-weight:400;margin-top:1px}
+  .day-btn.active{background:rgba(255,255,255,.92);color:var(--bg);border-color:transparent}
+  .day-btn:hover{background:rgba(255,255,255,.25);color:#fff}
+  .day-btn.active:hover{background:rgba(255,255,255,.78);color:var(--bg)}
+  .day-btn.all-btn{font-size:11px;padding:7px 14px}
 </style>
 </head>
 <body>
@@ -77,6 +87,7 @@
   <p style="margin-top:8px;font-size:12px;opacity:.8">Toca cualquier casilla para ver los detalles 👇</p>
 </header>
 
+<div class="day-toggles" id="dayToggles"></div>
 <div class="wrap"><table id="grid"></table></div>
 
 <footer>Horarios orientativos · Reserva ferri de Comino y pase gratuito de Blue Lagoon (blcomino.com) con antelación</footer>
@@ -135,7 +146,7 @@ set(2,"mar","Ferri Blue Lagoon","beach");
 set(3,"mar","Comino: baño y cuevas","beach");
 set(4,"mar","Comino + regreso","beach");
 set(5,"mar","Comida cerca de Marfa","food");
-set(6,"mar","Playa: Mellieħa / Popeye","beach");
+set(6,"mar","Playa: Meллieħa / Popeye","beach");
 set(7,"mar","Relax / vuelta al hotel","free");
 set(8,"mar","Cena en el hotel","food");
 set(2,"mie","Baño despedida","beach");
@@ -143,20 +154,50 @@ set(3,"mie","Sliema (opcional)","free");
 set(4,"mie","Devolución coche","move");
 
 const grid = document.getElementById("grid");
-let thead = "<tr><th>Hora</th>" + days.map(d=>`<th>${d.label}<small>${d.sub}</small></th>`).join("") + "</tr>";
+let thead = "<tr><th>Hora</th>" + days.map(d=>`<th data-day="${d.k}">${d.label}<small>${d.sub}</small></th>`).join("") + "</tr>";
 let body = "";
 rows.forEach((r,ri)=>{
   let tds = `<td class="time">${r}</td>`;
   days.forEach(d=>{
     const c = D[ri] && D[ri][d.k];
-    if(c){ tds += `<td class="cell" data-r="${ri}" data-d="${d.k}"><b>${c.t}</b><span class="tag t-${c.tag}">${tagName(c.tag)}</span></td>`; }
-    else { tds += `<td class="cell empty">·</td>`; }
+    if(c){ tds += `<td class="cell" data-day="${d.k}" data-r="${ri}" data-d="${d.k}"><b>${c.t}</b><span class="tag t-${c.tag}">${tagName(c.tag)}</span></td>`; }
+    else { tds += `<td class="cell empty" data-day="${d.k}">·</td>`; }
   });
   body += `<tr>${tds}</tr>`;
 });
 grid.innerHTML = thead + body;
 
 function tagName(t){return {culture:"Cultura",beach:"Playa/mar",food:"Comida",night:"Noche",move:"Traslado",free:"Libre"}[t]||t;}
+
+// ── Day column toggles ──────────────────────────────────────────────
+function showDay(dayKey, visible){
+  document.querySelectorAll(`[data-day="${dayKey}"]`).forEach(el=>el.classList.toggle("col-hidden",!visible));
+}
+
+const toggleBar = document.getElementById("dayToggles");
+const allBtn = document.createElement("button");
+allBtn.className = "day-btn all-btn active";
+allBtn.textContent = "Todos";
+allBtn.onclick = ()=>{
+  days.forEach(d=>showDay(d.k,true));
+  document.querySelectorAll(".day-btn").forEach(b=>b.classList.add("active"));
+};
+toggleBar.appendChild(allBtn);
+
+days.forEach(d=>{
+  const btn = document.createElement("button");
+  btn.className = "day-btn active";
+  btn.dataset.day = d.k;
+  btn.innerHTML = `${d.label}<small>${d.sub}</small>`;
+  btn.onclick = ()=>{
+    const isVisible = !document.querySelector(`th[data-day="${d.k}"]`).classList.contains("col-hidden");
+    showDay(d.k, !isVisible);
+    btn.classList.toggle("active", !isVisible);
+    const anyHidden = days.some(x=>document.querySelector(`th[data-day="${x.k}"]`).classList.contains("col-hidden"));
+    allBtn.classList.toggle("active", !anyHidden);
+  };
+  toggleBar.appendChild(btn);
+});
 
 const cache = {};
 async function openCell(r, dk){
