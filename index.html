@@ -140,11 +140,9 @@ set(9,"sab","🌈 Michelangelo","night");
 set(1,"dom","Descanso","free");
 set(2,"dom","Piscina / playa","free");
 set(3,"dom","Recoger coche (12:00)","move");
-set(4,"dom","Rotunda de Mosta","culture");
-set(5,"dom","Comida Castelletti","food");
+set(4,"dom","Comida Castelletti","food");
 set(6,"dom","Mdina + Rabat","culture");
-set(7,"dom","Atardecer Fontanella","food");
-set(8,"dom","Cena Ta' Marija","food");
+set(7,"dom","Puesta de sol Café del Mar","beach");
 set(1,"lun","Salida al sur","move");
 set(2,"lun","Blue Grotto","beach");
 set(3,"lun","Ħaġar Qim + Mnajdra","culture");
@@ -180,9 +178,7 @@ grid.innerHTML = thead + body;
 
 function tagName(t){return {culture:"Cultura",beach:"Playa/mar",food:"Comida",night:"Noche",move:"Traslado",free:"Libre"}[t]||t;}
 
-// ── Day column toggles ──────────────────────────────────────────
 const mobile = ()=>window.matchMedia("(max-width:768px)").matches;
-
 function showDay(dayKey, visible){
   document.querySelectorAll(`[data-day="${dayKey}"]`).forEach(el=>el.classList.toggle("col-hidden",!visible));
 }
@@ -191,37 +187,27 @@ function setActiveDay(dayKey){
   document.querySelectorAll(".day-btn:not(.all-btn)").forEach(b=>b.classList.toggle("active", b.dataset.day===dayKey));
   allBtn.classList.remove("active");
 }
-
 const toggleBar = document.getElementById("dayToggles");
 const allBtn = document.createElement("button");
 allBtn.className = "day-btn all-btn active";
 allBtn.textContent = "Todos";
-allBtn.onclick = ()=>{
-  days.forEach(d=>showDay(d.k,true));
-  document.querySelectorAll(".day-btn").forEach(b=>b.classList.add("active"));
-};
+allBtn.onclick = ()=>{ days.forEach(d=>showDay(d.k,true)); document.querySelectorAll(".day-btn").forEach(b=>b.classList.add("active")); };
 toggleBar.appendChild(allBtn);
-
 days.forEach(d=>{
   const btn = document.createElement("button");
-  btn.className = "day-btn active";
-  btn.dataset.day = d.k;
+  btn.className = "day-btn active"; btn.dataset.day = d.k;
   btn.innerHTML = `${d.label}<small>${d.sub}</small>`;
   btn.onclick = ()=>{
-    if(mobile()){
-      setActiveDay(d.k);
-    } else {
+    if(mobile()){ setActiveDay(d.k); }
+    else {
       const isVisible = !document.querySelector(`th[data-day="${d.k}"]`).classList.contains("col-hidden");
-      showDay(d.k, !isVisible);
-      btn.classList.toggle("active", !isVisible);
+      showDay(d.k, !isVisible); btn.classList.toggle("active", !isVisible);
       const anyHidden = days.some(x=>document.querySelector(`th[data-day="${x.k}"]`).classList.contains("col-hidden"));
       allBtn.classList.toggle("active", !anyHidden);
     }
   };
   toggleBar.appendChild(btn);
 });
-
-// En móvil, arrancar mostrando solo el primer día
 if(mobile()) setActiveDay(days[0].k);
 
 const cache = {};
@@ -243,7 +229,6 @@ async function openCell(r, dk){
     bodyEl.innerHTML = '<p>No se pudo cargar la información. Abre esta página desde su URL publicada (GitHub Pages), no como archivo local.</p>';
   }
 }
-
 document.querySelectorAll("td.cell:not(.empty)").forEach(td=>{
   td.addEventListener("click",()=> openCell(td.dataset.r, td.dataset.d));
 });
